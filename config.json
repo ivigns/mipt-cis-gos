@@ -2,7 +2,7 @@
     "gradient_dir": "gradient",
     "rect_dir": "rect",
     "grad_max": 15,
-    "min_avg": 0.1,
+    "min_avg": 1.0,
     "rect_color": [0, 0, 255],
     "rect_thickness": 3
 }

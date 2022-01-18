@@ -21,9 +21,6 @@ def gradient(img: np.ndarray) -> np.ndarray:
     return magnitude
 
 
-INT_SUM_MAX = 10 ** 18
-
-
 def integral_sum(img: np.ndarray) -> np.ndarray:
     sum_img = np.zeros_like(img)
     for i in range(img.shape[0]):
@@ -31,9 +28,7 @@ def integral_sum(img: np.ndarray) -> np.ndarray:
             top_sum = sum_img[i, j - 1] if j > 0 else 0
             left_sum = sum_img[i - 1, j] if i > 0 else 0
             top_left_sum = sum_img[i - 1, j - 1] if i > 0 and j > 0 else 0
-            sum_img[i, j] = (
-                left_sum + (top_sum - top_left_sum) + img[i, j]
-            ) % INT_SUM_MAX
+            sum_img[i, j] = left_sum + (top_sum - top_left_sum) + img[i, j]
     return sum_img
 
 
@@ -46,11 +41,8 @@ def get_sum(rect: Rect, sum_img: np.ndarray):
         else 0
     )
     return np.sum(
-        (
-            (sum_img[rect[1][0], rect[1][1]] - top_sum)
-            + (top_left_sum - left_sum)
-        )
-        % INT_SUM_MAX,
+        (sum_img[rect[1][0], rect[1][1]] - top_sum)
+        + (top_left_sum - left_sum),
     )
 
 
@@ -121,8 +113,7 @@ def main():
         assert os.path.exists(out_dir)
         dst_path = os.path.join(out_dir, os.path.split(src_path)[-1])
         cv2.imwrite(dst_path, gradient_img)
-
-    sum_img = integral_sum(img.astype(np.float64))
+    sum_img = integral_sum(gradient_img)
 
     rects = detect_color_gradient(sum_img, gradient_img, config)
     print(rects)
